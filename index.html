@@ -7,44 +7,44 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { width: 100%; height: 100%; background: #070c1a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    html, body { width: 100%; height: 100%; background: transparent !important; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
     body { display: flex; align-items: center; justify-content: center; padding: 24px; }
 
-    .screen { width: 100%; max-width: 760px; padding: 28px 28px 20px; background: #0a0f1e; border-radius: 18px; color: #e8eaf0; }
+    .screen { width: 100%; max-width: 760px; padding: 28px 28px 20px; background: transparent; border-radius: 18px; color: #e8eaf0; }
 
     .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 26px; }
-    .title-block .label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #5a6278; margin-bottom: 4px; }
-    .title-block .main-pop { font-size: 48px; font-weight: 500; letter-spacing: -0.02em; color: #e8eaf0; line-height: 1; font-variant-numeric: tabular-nums; }
-    .title-block .sub { font-size: 13px; color: #5a6278; margin-top: 6px; }
-    .live-badge { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #4ade80; letter-spacing: 0.08em; text-transform: uppercase; padding-top: 6px; }
-    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; animation: pulse 1.6s ease-in-out infinite; }
+    .title-block .label { font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: #8a93a8; margin-bottom: 6px; }
+    .title-block .main-pop { font-size: 64px; font-weight: 500; letter-spacing: -0.02em; color: #e8eaf0; line-height: 1; font-variant-numeric: tabular-nums; }
+    .title-block .sub { font-size: 16px; color: #8a93a8; margin-top: 8px; }
+    .live-badge { display: flex; align-items: center; gap: 6px; font-size: 15px; color: #4ade80; letter-spacing: 0.08em; text-transform: uppercase; padding-top: 6px; }
+    .live-dot { width: 9px; height: 9px; border-radius: 50%; background: #4ade80; animation: pulse 1.6s ease-in-out infinite; }
     @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 
     .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 22px; }
-    .metric { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px 16px; }
-    .metric .m-label { font-size: 10px; color: #5a6278; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
-    .metric .m-val { font-size: 20px; font-weight: 500; color: #e8eaf0; font-variant-numeric: tabular-nums; }
-    .metric .m-sub { font-size: 10px; color: #5a6278; margin-top: 3px; }
+    .metric { background: rgba(255,255,255,0.07); border: 0.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 14px 16px; }
+    .metric .m-label { font-size: 13px; color: #8a93a8; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; }
+    .metric .m-val { font-size: 26px; font-weight: 500; color: #e8eaf0; font-variant-numeric: tabular-nums; }
+    .metric .m-sub { font-size: 13px; color: #8a93a8; margin-top: 4px; }
     .metric .m-val.green { color: #4ade80; }
     .metric .m-val.amber { color: #fbbf24; }
 
-    .section-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #5a6278; margin-bottom: 10px; }
+    .section-label { font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: #8a93a8; margin-bottom: 12px; }
 
-    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
-    .bar-name { font-size: 12px; color: #9ca3b0; width: 100px; text-align: right; flex-shrink: 0; }
-    .bar-track { flex: 1; background: rgba(255,255,255,0.06); border-radius: 3px; height: 8px; overflow: hidden; }
+    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+    .bar-name { font-size: 15px; color: #b0b8c8; width: 120px; text-align: right; flex-shrink: 0; }
+    .bar-track { flex: 1; background: rgba(255,255,255,0.07); border-radius: 3px; height: 10px; overflow: hidden; }
     .bar-fill { height: 100%; border-radius: 3px; }
-    .bar-val { font-size: 12px; color: #9ca3b0; width: 52px; flex-shrink: 0; }
+    .bar-val { font-size: 15px; color: #b0b8c8; width: 58px; flex-shrink: 0; }
 
     .chart-section { margin-bottom: 22px; }
 
     .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .mini-chart { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px 16px; }
+    .mini-chart { background: rgba(255,255,255,0.07); border: 0.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 14px 16px; }
 
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #9ca3b0; margin-bottom: 4px; }
-    .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 15px; color: #b0b8c8; margin-bottom: 6px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 
-    .clock { font-size: 11px; color: #3a4060; text-align: right; margin-top: 14px; font-variant-numeric: tabular-nums; }
+    .clock { font-size: 13px; color: #4a5470; text-align: right; margin-top: 14px; font-variant-numeric: tabular-nums; }
   </style>
 </head>
 <body>
@@ -170,8 +170,8 @@
         tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(1) + 'B' } }
       },
       scales: {
-        x: { ticks: { color: '#5a6278', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
-        y: { ticks: { color: '#5a6278', font: { size: 10 }, callback: v => v + 'B' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+        x: { ticks: { color: '#8a93a8', font: { size: 13 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { ticks: { color: '#8a93a8', font: { size: 13 }, callback: v => v + 'B' }, grid: { color: 'rgba(255,255,255,0.05)' } }
       }
     }
   });
