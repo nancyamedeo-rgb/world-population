@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>World Population — Dakboard Widget</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; background: #070c1a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    body { display: flex; align-items: center; justify-content: center; padding: 24px; }
+
+    .screen { width: 100%; max-width: 760px; padding: 28px 28px 20px; background: #0a0f1e; border-radius: 18px; color: #e8eaf0; }
+
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 26px; }
+    .title-block .label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #5a6278; margin-bottom: 4px; }
+    .title-block .main-pop { font-size: 48px; font-weight: 500; letter-spacing: -0.02em; color: #e8eaf0; line-height: 1; font-variant-numeric: tabular-nums; }
+    .title-block .sub { font-size: 13px; color: #5a6278; margin-top: 6px; }
+    .live-badge { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #4ade80; letter-spacing: 0.08em; text-transform: uppercase; padding-top: 6px; }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; animation: pulse 1.6s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 22px; }
+    .metric { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px 16px; }
+    .metric .m-label { font-size: 10px; color: #5a6278; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+    .metric .m-val { font-size: 20px; font-weight: 500; color: #e8eaf0; font-variant-numeric: tabular-nums; }
+    .metric .m-sub { font-size: 10px; color: #5a6278; margin-top: 3px; }
+    .metric .m-val.green { color: #4ade80; }
+    .metric .m-val.amber { color: #fbbf24; }
+
+    .section-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #5a6278; margin-bottom: 10px; }
+
+    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+    .bar-name { font-size: 12px; color: #9ca3b0; width: 100px; text-align: right; flex-shrink: 0; }
+    .bar-track { flex: 1; background: rgba(255,255,255,0.06); border-radius: 3px; height: 8px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 3px; }
+    .bar-val { font-size: 12px; color: #9ca3b0; width: 52px; flex-shrink: 0; }
+
+    .chart-section { margin-bottom: 22px; }
+
+    .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .mini-chart { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px 16px; }
+
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #9ca3b0; margin-bottom: 4px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+    .clock { font-size: 11px; color: #3a4060; text-align: right; margin-top: 14px; font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+
+<div class="screen">
+  <div class="header">
+    <div class="title-block">
+      <div class="label">World Population</div>
+      <div class="main-pop" id="main-pop">8,208,573,421</div>
+      <div class="sub">Estimated live count &middot; 2025</div>
+    </div>
+    <div class="live-badge">
+      <span class="live-dot"></span>Live
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric">
+      <div class="m-label">Births today</div>
+      <div class="m-val green" id="births-today">0</div>
+      <div class="m-sub">~4.5 per second</div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Deaths today</div>
+      <div class="m-val amber" id="deaths-today">0</div>
+      <div class="m-sub">~1.9 per second</div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Net growth today</div>
+      <div class="m-val green" id="net-today">0</div>
+      <div class="m-sub">~2.6 per second</div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Growth rate</div>
+      <div class="m-val">0.87%</div>
+      <div class="m-sub">per year</div>
+    </div>
+  </div>
+
+  <div class="chart-section">
+    <div class="section-label">Most populous regions</div>
+    <div id="bars"></div>
+  </div>
+
+  <div class="bottom-row">
+    <div class="mini-chart">
+      <div class="section-label">Historical growth</div>
+      <div style="position:relative; width:100%; height:120px;">
+        <canvas id="growthChart"></canvas>
+      </div>
+    </div>
+    <div class="mini-chart">
+      <div class="section-label">Continental split</div>
+      <div style="display:flex; align-items:center; gap:16px; margin-top:4px;">
+        <div style="position:relative; width:90px; height:90px; flex-shrink:0;">
+          <canvas id="splitChart" width="90" height="90"></canvas>
+        </div>
+        <div>
+          <div class="legend-item"><span class="legend-dot" style="background:#6366f1;"></span>Asia — 59%</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span>Africa — 18%</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span>Americas — 13%</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#3b82f6;"></span>Europe — 9%</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span>Other — 1%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="clock" id="clock-line">Updating every second</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+  const BASE_POP = 8208573421;
+  const BASE_TIME = new Date('2025-01-01T00:00:00Z').getTime();
+  const BIRTHS_PER_SEC = 4.5;
+  const DEATHS_PER_SEC = 1.87;
+  const NET_PER_SEC = BIRTHS_PER_SEC - DEATHS_PER_SEC;
+
+  const regions = [
+    { name: 'East Asia',      pop: 2.32, color: '#6366f1' },
+    { name: 'South Asia',     pop: 2.01, color: '#8b5cf6' },
+    { name: 'Sub-Sah. Africa',pop: 1.18, color: '#10b981' },
+    { name: 'SE Asia',        pop: 0.69, color: '#a78bfa' },
+    { name: 'Europe',         pop: 0.75, color: '#3b82f6' },
+    { name: 'Lat. America',   pop: 0.66, color: '#f59e0b' },
+    { name: 'N. America',     pop: 0.37, color: '#ef4444' },
+  ];
+
+  const barsEl = document.getElementById('bars');
+  const maxPop = Math.max(...regions.map(r => r.pop));
+  regions.forEach(r => {
+    const pct = Math.round((r.pop / maxPop) * 100);
+    const row = document.createElement('div');
+    row.className = 'bar-row';
+    row.innerHTML = `
+      <div class="bar-name">${r.name}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${r.color};"></div></div>
+      <div class="bar-val">${r.pop.toFixed(2)}B</div>`;
+    barsEl.appendChild(row);
+  });
+
+  new Chart(document.getElementById('growthChart'), {
+    type: 'line',
+    data: {
+      labels: ['1800','1900','1950','1975','2000','2010','2025'],
+      datasets: [{
+        data: [1.0, 1.6, 2.5, 4.0, 6.1, 6.9, 8.2],
+        borderColor: '#6366f1',
+        borderWidth: 2,
+        pointRadius: 2,
+        pointBackgroundColor: '#6366f1',
+        fill: true,
+        backgroundColor: 'rgba(99,102,241,0.12)',
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(1) + 'B' } }
+      },
+      scales: {
+        x: { ticks: { color: '#5a6278', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { ticks: { color: '#5a6278', font: { size: 10 }, callback: v => v + 'B' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('splitChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Asia','Africa','Americas','Europe','Other'],
+      datasets: [{
+        data: [59, 18, 13, 9, 1],
+        backgroundColor: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ef4444'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: false,
+      cutout: '68%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed + '%' } }
+      }
+    }
+  });
+
+  function secondsToday() {
+    const now = new Date();
+    return now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+  }
+
+  function fmt(n) {
+    return Math.round(n).toLocaleString();
+  }
+
+  function tick() {
+    const elapsed = (Date.now() - BASE_TIME) / 1000;
+    const current = BASE_POP + elapsed * NET_PER_SEC;
+
+    const sToday = secondsToday();
+    const births = sToday * BIRTHS_PER_SEC;
+    const deaths = sToday * DEATHS_PER_SEC;
+    const net = births - deaths;
+
+    document.getElementById('main-pop').textContent = fmt(current);
+    document.getElementById('births-today').textContent = fmt(births);
+    document.getElementById('deaths-today').textContent = fmt(deaths);
+    document.getElementById('net-today').textContent = '+' + fmt(net);
+
+    const now = new Date();
+    document.getElementById('clock-line').textContent =
+      'Last updated: ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+
+  tick();
+  setInterval(tick, 1000);
+</script>
+</body>
+</html>
